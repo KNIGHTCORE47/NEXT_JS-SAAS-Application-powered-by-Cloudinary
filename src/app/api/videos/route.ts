@@ -14,18 +14,24 @@ export async function GET(request: NextRequest) {
         );
 
         console.log("Prisma return video response:", video);
-        
+
 
         //NOTE - Return An Arry Of Videos
-        return NextResponse.json(video)
-        
+        return NextResponse.json(
+            {
+                success: true,
+                message: 'Videos fetched successfully',
+                video
+            }, { status: 200 }
+        )
+
     } catch (error) {
         return NextResponse.json(
             {
                 success: false,
                 message: 'Error while fetching videos',
                 error
-         }, {status: 500})
+            }, { status: 500 })
     } finally {
         await prisma.$disconnect()
     }
