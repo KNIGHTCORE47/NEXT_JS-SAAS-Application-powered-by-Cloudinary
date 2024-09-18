@@ -12,14 +12,14 @@ const isPublicApiRoute = createRouteMatcher([
     "/api/videos",
 ])
 
-export default clerkMiddleware(( auth, req) => {
-    const {userId} = auth();
+export default clerkMiddleware((auth, req) => {
+    const { userId } = auth();
     const currentUrl = new URL(req.url)
     const isAccessingDashboard = currentUrl.pathname === "/home"
 
     const isApiRequest = currentUrl.pathname.startsWith("/api")
 
-//NOTE - This is only for public routes, Here we are checking if user is logged in, want to access the public routes but not want to access dashboard then redirect user to dashboard homepage
+    //NOTE - This is only for public routes, Here we are checking if user is logged in, want to access the public routes but not want to access dashboard then redirect user to dashboard homepage
     if (userId && isPublicRoute(req) && !isAccessingDashboard) {
         return NextResponse.redirect(new URL("/home", req.url))
     }
@@ -35,7 +35,7 @@ export default clerkMiddleware(( auth, req) => {
         //NOTE - User not logged in and request for accessing API(Protected API)
         if (isApiRequest && !isPublicApiRoute(req)) {
             return NextResponse.redirect(new URL("/sign-in", req.url))
-            
+
         }
     }
 
@@ -45,4 +45,4 @@ export default clerkMiddleware(( auth, req) => {
 
 export const config = {
     matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
-  }
+}

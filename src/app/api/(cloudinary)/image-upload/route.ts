@@ -91,6 +91,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json(
             {
+                success: false,
                 message: 'Error while uploading image',
                 error
             }, { status: 500 })

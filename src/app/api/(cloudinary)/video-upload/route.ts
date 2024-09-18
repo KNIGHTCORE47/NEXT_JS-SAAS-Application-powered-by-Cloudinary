@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server';
-import { PrismaClient } from '@prisma/client/extension';
+import { PrismaClient } from '@prisma/client'
 import { v2 as cloudinary } from 'cloudinary';
 import { NextResponse, NextRequest } from 'next/server';
 
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
                 {
                     success: false,
                     message: 'File not found',
-                }, { status: 40 })
+                }, { status: 404 })
         }
 
         //NOTE - Upload any file format to cloudinary using upload method arrayBuffer method
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
                 description,
                 publicId: result.public_id,
                 originalSize,
-                comoressedSize: String(result.bytes),
+                compressedSize: String(result.bytes),
                 duration: result.duration || 0,
             }
         })
@@ -118,6 +118,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json(
             {
+                success: false,
                 message: 'Error while uploading video',
                 error
             }, { status: 500 })
