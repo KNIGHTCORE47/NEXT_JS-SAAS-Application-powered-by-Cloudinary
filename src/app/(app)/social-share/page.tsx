@@ -26,7 +26,7 @@ export default function SocialSharePage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>();
 
   //NOTE - Here we manage the state of the selected format
-  const [selectedFromat, setSelectedFromat] = useState<socialFormat>(
+  const [selectedFormat, setSelectedFormat] = useState<socialFormat>(
     "Instagram Square (1:1)"
   );
 
@@ -48,10 +48,11 @@ export default function SocialSharePage() {
       toast({
         title: "Transforming",
         description: "Please wait while we transform the image",
+        duration: 700,
         variant: "default",
       });
     }
-  }, [uploadedImage, selectedFromat, toast]);
+  }, [uploadedImage, selectedFormat, toast]);
 
   async function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
     //NOTE - Here we upload the image to cloudinary
@@ -77,7 +78,7 @@ export default function SocialSharePage() {
 
       console.log("Total response for image upload:", response);
 
-      if (!response.data) {
+      if (!response.data || !response.data.publicId) {
         console.log("Error while uploading image", response?.data.message);
 
         toast({
@@ -131,11 +132,13 @@ export default function SocialSharePage() {
       const response = await axios(imageRef?.current.src, { responseType: 'arraybuffer' });
 
       if (!response.data) {
+        console.log("Error while downloading image");
+
         toast({
           title: "Error",
-          description: "Something went wrong while downloading image, Please try again",
+          description: "Something went wrong while downloading image, Please try again.",
           variant: "destructive",
-        })
+        });
         return;
       }
 
@@ -147,14 +150,13 @@ export default function SocialSharePage() {
       const link = document.createElement('a');
 
       link.href = url;
-      link.download = `${selectedFromat.replace(/\s/g, "_").toLowerCase()}.png`;
+      link.download = `${selectedFormat.replace(/\s/g, "_").toLowerCase()}.png`;
       document.body.appendChild(link);
       link.click();
 
       //NOTE - here we remove the url from the browser cache after the download operation
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      document.body.removeChild(link);
 
       toast({
         title: "Success",
@@ -173,9 +175,6 @@ export default function SocialSharePage() {
         variant: "destructive",
       })
     }
-
-
-
   }
 
 
@@ -241,7 +240,7 @@ export default function SocialSharePage() {
                   <select
                     name="" id=""
                     className="select select-bordered w-full"
-                    onChange={(e) => setSelectedFromat(e.target.value as socialFormat)}
+                    onChange={(e) => setSelectedFormat(e.target.value as socialFormat)}
                   >
                     {
                       Object.keys(socialFormats).map((format) => (
@@ -282,8 +281,8 @@ export default function SocialSharePage() {
 
                       <div>
                         <CldImage
-                          width={socialFormats[selectedFromat].width}
-                          height={socialFormats[selectedFromat].height}
+                          width={socialFormats[selectedFormat].width}
+                          height={socialFormats[selectedFormat].height}
                           src={uploadedImage}
                           sizes="100vw"
                           alt="Transformed image"
@@ -306,7 +305,7 @@ export default function SocialSharePage() {
                       onClick={handleFileDownload}
                     >
 
-                      Download for {selectedFromat}
+                      Download for {selectedFormat}
 
                     </button>
 

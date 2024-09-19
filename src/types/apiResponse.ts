@@ -1,10 +1,8 @@
-export type ApiResponseError = {
-    error: string;
-    message: string;
-    statusCode: number;
-}
+import { Video } from './videosType'
 
 export interface ApiResponse {
     success: boolean;
     message: string;
+    status: number;
+    video?: Video[]
 }
