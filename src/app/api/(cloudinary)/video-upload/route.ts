@@ -77,13 +77,14 @@ export async function POST(request: NextRequest) {
                 const uploadStream = cloudinary.uploader.upload_stream(
                     {
                         folder: "next-js-saas-app-powered-by-cloudinary/video-upload",
-                        resource_type: "auto",
-                        transformations: [
+                        resource_type: "video",
+                        transformation: [
                             {
                                 quality: "auto",
                                 fetch_format: "mp4",
                             }
-                        ]
+                        ],
+                        eager_async: true,
                     },
                     (error, result) => {
                         if (error) reject(error);
